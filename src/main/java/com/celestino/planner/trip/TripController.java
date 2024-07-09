@@ -9,14 +9,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.UUID;
 import java.util.Optional;
+import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.celestino.planner.participant.Participant;
 import com.celestino.planner.participant.ParticipantCreateResponse;
+import com.celestino.planner.participant.ParticipantData;
 import com.celestino.planner.participant.ParticipantRequestPayload;
 import com.celestino.planner.participant.ParticipantService;
 
@@ -110,5 +111,13 @@ public class TripController
         if(rawTrip.getIsConfirmed()) participantService.triggerConfirmationEmailToParticipants(rawTrip.getId());
 
         return ResponseEntity.ok(participantResponse);
+    }
+
+    @GetMapping("/{id}/participants")
+    public ResponseEntity<List<ParticipantData>> getAllParticipants(@PathVariable UUID id)
+    {
+        List<ParticipantData> participantsList = this.participantService.getAllParticipantsFromEvent(id);
+
+        return ResponseEntity.ok(participantsList);
     }
 }
