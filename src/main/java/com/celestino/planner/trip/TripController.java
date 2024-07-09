@@ -9,11 +9,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.Optional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.celestino.planner.participant.ParticipantCreateResponse;
+import com.celestino.planner.participant.ParticipantRequestPayload;
 import com.celestino.planner.participant.ParticipantService;
 
 @RestController
@@ -87,5 +91,24 @@ public class TripController
         participantService.triggerConfirmationEmailToParticipants(id);
 
         return ResponseEntity.ok(rawTrip);
+    }
+
+    @PostMapping("/{id}/invite")
+    public ResponseEntity<ParticipantCreateResponse> inviteParticipant(@PathVariable UUID id, @RequestBody ParticipantRequestPayload payload)
+    {
+        Optional<Trip> trip = this.tripRepository.findById(id);
+
+        if(!trip.isPresent())
+        {
+            return ResponseEntity.notFound().build();
+        }
+
+        Trip rawTrip = trip.get();
+
+        ParticipantCreateResponse participantResponse = this.participantService.registerParticipantToEvent(payload.email(), rawTrip);
+
+        if(rawTrip.getIsConfirmed()) participantService.triggerConfirmationEmailToParticipants(rawTrip.getId());
+
+        return ResponseEntity.ok(participantResponse);
     }
 }
