@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -36,6 +37,14 @@ public class Participant
     private Boolean isConfirmed;
 
     @ManyToOne
-    @Column(name = "trip_id", nullable = false)
+    @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
+
+    public Participant(String email, Trip trip)
+    {
+        this.email = email;
+        this.isConfirmed = false;
+        this.name = "";
+        this.trip = trip;
+    }
 }
