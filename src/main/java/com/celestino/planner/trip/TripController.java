@@ -1,5 +1,6 @@
 package com.celestino.planner.trip;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,10 @@ import com.celestino.planner.activity.ActivityData;
 import com.celestino.planner.activity.ActivityRequestPayload;
 import com.celestino.planner.activity.ActivityResponse;
 import com.celestino.planner.activity.ActivityService;
+import com.celestino.planner.link.LinkRepository;
+import com.celestino.planner.link.LinkRequestPayload;
+import com.celestino.planner.link.LinkResponse;
+import com.celestino.planner.link.LinkService;
 import com.celestino.planner.participant.Participant;
 import com.celestino.planner.participant.ParticipantCreateResponse;
 import com.celestino.planner.participant.ParticipantData;
@@ -35,6 +40,9 @@ public class TripController
 
     @Autowired
     private ActivityService activityService;
+
+    @Autowired
+    private LinkService linkService;
 
     @Autowired
     private TripRepository tripRepository;
@@ -151,5 +159,22 @@ public class TripController
         List<ActivityData> activityDataList = this.activityService.getAllActivitiesFromTripId(id);
 
         return ResponseEntity.ok(activityDataList);
+    }
+
+    @PostMapping("/{id}/links")
+    public ResponseEntity<LinkResponse> registerLink(@PathVariable UUID id, @RequestBody LinkRequestPayload payload)
+    {
+        Optional<Trip> trip = this.tripRepository.findById(id);
+
+        if(!trip.isPresent())
+        {
+            return ResponseEntity.notFound().build();
+        }
+
+        Trip rawTrip = trip.get();
+
+        LinkResponse linkResponse = this.linkService.registerLink(payload, rawTrip);
+
+        return ResponseEntity.ok(linkResponse);
     }
 }
