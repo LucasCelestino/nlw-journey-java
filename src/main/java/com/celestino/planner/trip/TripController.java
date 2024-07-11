@@ -15,6 +15,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.celestino.planner.activity.ActivityData;
 import com.celestino.planner.activity.ActivityRequestPayload;
 import com.celestino.planner.activity.ActivityResponse;
 import com.celestino.planner.activity.ActivityService;
@@ -142,5 +143,13 @@ public class TripController
         ActivityResponse activityResponse = this.activityService.registerActivity(payload, rawTrip);
         
         return ResponseEntity.ok(activityResponse);
+    }
+
+    @GetMapping("/{id}/activities")
+    public ResponseEntity<List<ActivityData>> getAllActivities(@PathVariable UUID id)
+    {
+        List<ActivityData> activityDataList = this.activityService.getAllActivitiesFromTripId(id);
+
+        return ResponseEntity.ok(activityDataList);
     }
 }
