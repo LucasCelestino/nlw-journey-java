@@ -15,6 +15,9 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.celestino.planner.activity.ActivityRequestPayload;
+import com.celestino.planner.activity.ActivityResponse;
+import com.celestino.planner.activity.ActivityService;
 import com.celestino.planner.participant.Participant;
 import com.celestino.planner.participant.ParticipantCreateResponse;
 import com.celestino.planner.participant.ParticipantData;
@@ -28,6 +31,9 @@ public class TripController
 
     @Autowired
     private ParticipantService participantService;
+
+    @Autowired
+    private ActivityService activityService;
 
     @Autowired
     private TripRepository tripRepository;
@@ -119,5 +125,22 @@ public class TripController
         List<ParticipantData> participantsList = this.participantService.getAllParticipantsFromEvent(id);
 
         return ResponseEntity.ok(participantsList);
+    }
+
+    @PostMapping("/{id}/activities")
+    public ResponseEntity<ActivityResponse> registerActivity(@PathVariable UUID id, ActivityRequestPayload payload)
+    {
+        Optional<Trip> trip = this.tripRepository.findById(id);
+        
+        if(!trip.isPresent())
+        {
+            return ResponseEntity.notFound().build();
+        }
+
+        Trip rawTrip = trip.get();
+
+        ActivityResponse activityResponse = this.activityService.registerActivity(payload, rawTrip);
+        
+        return ResponseEntity.ok(activityResponse);
     }
 }
