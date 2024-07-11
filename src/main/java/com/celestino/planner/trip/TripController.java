@@ -1,6 +1,5 @@
 package com.celestino.planner.trip;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,11 +20,9 @@ import com.celestino.planner.activity.ActivityRequestPayload;
 import com.celestino.planner.activity.ActivityResponse;
 import com.celestino.planner.activity.ActivityService;
 import com.celestino.planner.link.LinkData;
-import com.celestino.planner.link.LinkRepository;
 import com.celestino.planner.link.LinkRequestPayload;
 import com.celestino.planner.link.LinkResponse;
 import com.celestino.planner.link.LinkService;
-import com.celestino.planner.participant.Participant;
 import com.celestino.planner.participant.ParticipantCreateResponse;
 import com.celestino.planner.participant.ParticipantData;
 import com.celestino.planner.participant.ParticipantRequestPayload;
