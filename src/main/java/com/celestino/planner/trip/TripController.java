@@ -20,6 +20,7 @@ import com.celestino.planner.activity.ActivityData;
 import com.celestino.planner.activity.ActivityRequestPayload;
 import com.celestino.planner.activity.ActivityResponse;
 import com.celestino.planner.activity.ActivityService;
+import com.celestino.planner.link.LinkData;
 import com.celestino.planner.link.LinkRepository;
 import com.celestino.planner.link.LinkRequestPayload;
 import com.celestino.planner.link.LinkResponse;
@@ -176,5 +177,20 @@ public class TripController
         LinkResponse linkResponse = this.linkService.registerLink(payload, rawTrip);
 
         return ResponseEntity.ok(linkResponse);
+    }
+
+    @GetMapping("/{id}/links")
+    public ResponseEntity<List<LinkData>> getAllLinks(@PathVariable UUID id)
+    {
+        Optional<Trip> trip = tripRepository.findById(id);
+
+        if(!trip.isPresent())
+        {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<LinkData> linkDataList = linkService.getAllLinksFromTrip(id);
+
+        return ResponseEntity.ok(linkDataList);
     }
 }
